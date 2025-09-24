@@ -1,0 +1,30 @@
+/* Make the table scroll horizontally on very small screens */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Filters: stack nicely on mobile */
+@media (max-width: 576px) {
+  .filters-card .row > [class*="col-"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .filters-card .form-label {
+    font-size: 0.875rem;
+  }
+
+  .filters-card .form-control,
+  .filters-card .form-select {
+    font-size: 0.9rem;
+  }
+}
+
+/* Pagination: shrink buttons on mobile */
+@media (max-width: 576px) {
+  .pagination .page-link {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
