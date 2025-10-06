@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { BASE_URL } from "../constants/BASE_URL";
 
-// Yup validation schema (mirrors backend)
+// Yup validation schema (same as before)
 const companySchema = yup.object().shape({
   name: yup.string().required("Name is required").min(2).max(100),
   description: yup.string().nullable(),
@@ -75,9 +75,8 @@ const CompanyFormModal = ({ show, onClose, onSuccess, company }) => {
         isActive: company.isActive !== undefined ? company.isActive : true,
       });
     } else {
-      reset(); // clear for add
+      reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [company, isEdit, reset]);
 
   const submitHandler = async (values) => {
@@ -89,11 +88,9 @@ const CompanyFormModal = ({ show, onClose, onSuccess, company }) => {
           { withCredentials: true }
         );
       } else {
-        await axios.post(
-          `${BASE_URL}companies/add`,
-          values,
-          { withCredentials: true }
-        );
+        await axios.post(`${BASE_URL}companies/add`, values, {
+          withCredentials: true,
+        });
       }
       onSuccess();
     } catch (err) {
@@ -105,96 +102,227 @@ const CompanyFormModal = ({ show, onClose, onSuccess, company }) => {
   if (!show) return null;
 
   return (
-    <div className="modal show d-block" tabIndex="-1" role="dialog">
-      <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div className="modal-content">
-          <form onSubmit={handleSubmit(submitHandler)}>
-            <div className="modal-header">
-              <h5 className="modal-title">{isEdit ? "Edit Company" : "Add Company"}</h5>
-              <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
-            </div>
-            <div className="modal-body">
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <label className="form-label">Name</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.name ? "is-invalid" : ""}`} {...register("name")} />
-                  <div className="invalid-feedback">{errors.name?.message}</div>
-                </div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose} 
+    >
+      <div
+        className="bg-white w-full max-w-4xl rounded-lg shadow-lg"
+        onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside modal
+      >
+        <form onSubmit={handleSubmit(submitHandler)} className="flex flex-col">
+          {/* Header */}
+          <div className="flex justify-between items-center px-6 py-4 border-b">
+            <h5 className="text-lg font-semibold">
+              {isEdit ? "Edit Company" : "Add Company"}
+            </h5>
+            <button
+              type="button"
+              className="text-gray-500 hover:text-gray-700"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+          </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Industry</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.industry ? "is-invalid" : ""}`} {...register("industry")} />
-                  <div className="invalid-feedback">{errors.industry?.message}</div>
-                </div>
+          {/* Body */}
+          <div className="px-6 py-4 overflow-y-auto max-h-[70vh]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium">Name</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.name ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">City</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.location ? "is-invalid" : ""}`} {...register("location")} />
-                  <div className="invalid-feedback">{errors.location?.message}</div>
-                </div>
+              {/* Industry */}
+              <div>
+                <label className="block text-sm font-medium">Industry</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.industry ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("industry")}
+                />
+                {errors.industry && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.industry.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Pincode</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.pincode ? "is-invalid" : ""}`} {...register("pincode")} />
-                  <div className="invalid-feedback">{errors.pincode?.message}</div>
-                </div>
+              {/* City */}
+              <div>
+                <label className="block text-sm font-medium">City</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.location ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("location")}
+                />
+                {errors.location && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.location.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Employee Size</label>
-                  <input placeholder="Enter Here.." type="number" className={`form-control ${errors.employeeSize ? "is-invalid" : ""}`} {...register("employeeSize")} />
-                  <div className="invalid-feedback">{errors.employeeSize?.message}</div>
-                </div>
+              {/* Pincode */}
+              <div>
+                <label className="block text-sm font-medium">Pincode</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.pincode ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("pincode")}
+                />
+                {errors.pincode && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.pincode.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Established Date</label>
-                  <input type="date" className={`form-control ${errors.establishedDate ? "is-invalid" : ""}`} {...register("establishedDate")} />
-                  <div className="invalid-feedback">{errors.establishedDate?.message}</div>
-                </div>
+              {/* Employee Size */}
+              <div>
+                <label className="block text-sm font-medium">Employee Size</label>
+                <input
+                  type="number"
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.employeeSize ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("employeeSize")}
+                />
+                {errors.employeeSize && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.employeeSize.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Website</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.website ? "is-invalid" : ""}`} {...register("website")} />
-                  <div className="invalid-feedback">{errors.website?.message}</div>
-                </div>
+              {/* Established Date */}
+              <div>
+                <label className="block text-sm font-medium">
+                  Established Date
+                </label>
+                <input
+                  type="date"
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.establishedDate
+                    ? "border-red-500"
+                    : "border-gray-300"
+                    }`}
+                  {...register("establishedDate")}
+                />
+                {errors.establishedDate && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.establishedDate.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Email</label>
-                  <input placeholder="Enter Here.." type="email" className={`form-control ${errors.email ? "is-invalid" : ""}`} {...register("email")} />
-                  <div className="invalid-feedback">{errors.email?.message}</div>
-                </div>
+              {/* Website */}
+              <div>
+                <label className="block text-sm font-medium">Website</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.website ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("website")}
+                />
+                {errors.website && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.website.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Phone</label>
-                  <input placeholder="Enter Here.." className={`form-control ${errors.phone ? "is-invalid" : ""}`} {...register("phone")} />
-                  <div className="invalid-feedback">{errors.phone?.message}</div>
-                </div>
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium">Email</label>
+                <input
+                  type="email"
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label">Description</label>
-                  <textarea placeholder="Enter Here.." className="form-control" rows="2" {...register("description")}></textarea>
-                </div>
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium">Phone</label>
+                <input
+                  placeholder="Enter Here.."
+                  className={`w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 ${errors.phone ? "border-red-500" : "border-gray-300"
+                    }`}
+                  {...register("phone")}
+                />
+                {errors.phone && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="col-md-6 d-flex align-items-center">
-                  <div className="form-check mt-2">
-                    <input className="form-check-input" type="checkbox" {...register("isActive")} id="isActive" />
-                    <label className="form-check-label" htmlFor="isActive">
-                      Active
-                    </label>
-                  </div>
-                </div>
+              {/* Description */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium">Description</label>
+                <textarea
+                  placeholder="Enter Here.."
+                  rows="2"
+                  className="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200 border-gray-300"
+                  {...register("description")}
+                ></textarea>
+              </div>
+
+              {/* Active checkbox */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  className="h-4 w-4 border-gray-300 rounded"
+                  {...register("isActive")}
+                />
+                <label htmlFor="isActive" className="text-sm">
+                  Active
+                </label>
               </div>
             </div>
+          </div>
 
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={onClose} disabled={isSubmitting}>
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                {isEdit ? "Update Company" : "Create Company"}
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Footer */}
+          <div className="flex justify-end gap-2 px-6 py-4 border-t">
+            <button
+              type="button"
+              className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              disabled={isSubmitting}
+            >
+              {isEdit ? "Update Company" : "Create Company"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

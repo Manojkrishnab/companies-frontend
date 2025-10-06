@@ -19,18 +19,20 @@ const Header = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow-sm">
-      <div className="container-fluid">
+    <nav className="flex items-center bg-gray-100 border-b p-3 px-4 shadow-sm">
+      <div className="w-full flex items-center justify-between">
         <span
-          className="navbar-brand fw-bold fs-4"
-          style={{ cursor: "pointer" }}
+          className="text-gray-800 font-bold text-xl cursor-pointer"
           onClick={() => navigate("/")}
         >
           Companies
         </span>
 
-        <div className="d-flex">
-          <button className="btn btn-outline-light" onClick={handleLogout}>
+        <div className="flex">
+          <button
+            className="border border-gray-500 text-gray-700 px-3 py-1 rounded hover:bg-white"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>

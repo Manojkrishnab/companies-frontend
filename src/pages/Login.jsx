@@ -44,10 +44,10 @@ const Login = () => {
 
             setApiSuccess(res.data.message);
 
-            // ✅ Update auth state immediately
+            // Update auth state immediately
             setAuth({ loading: false, isAuthenticated: true });
 
-            // ✅ Navigate to home
+            // Navigate to home
             navigate("/");
         } catch (err) {
             if (err.response && err.response.data) {
@@ -59,52 +59,80 @@ const Login = () => {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-            <div className="card shadow p-4" style={{ width: "100%", maxWidth: "400px" }}>
-                <h3 className="text-center mb-3 text-primary">Login</h3>
+        <>
+            
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+                <h3 className="text-center mb-4 font-semibold text-3xl text-blue-600"><i>Companies</i></h3>
+                <div className="w-full max-w-sm bg-white rounded-lg shadow p-6">
+                    <h3 className="text-center mb-4 text-2xl font-semibold text-blue-600">
+                        Login
+                    </h3>
 
-                {/* API error / success messages */}
-                {apiError && <div className="alert alert-danger">{apiError}</div>}
-                {apiSuccess && <div className="alert alert-success">{apiSuccess}</div>}
+                    {/* API error / success messages */}
+                    {apiError && (
+                        <div className="mb-3 rounded border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700">
+                            {apiError}
+                        </div>
+                    )}
+                    {apiSuccess && (
+                        <div className="mb-3 rounded border border-green-300 bg-green-100 px-3 py-2 text-sm text-green-700">
+                            {apiSuccess}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                    {/* Email */}
-                    <div className="mb-3">
-                        <label htmlFor="emailId" className="form-label">Email address</label>
-                        <input
-                            type="email"
-                            id="emailId"
-                            className={`form-control ${errors.emailId ? "is-invalid" : ""}`}
-                            placeholder="Enter email"
-                            {...register("emailId")}
-                        />
-                        <div className="invalid-feedback">{errors.emailId?.message}</div>
-                    </div>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                        {/* Email */}
+                        <div className="mb-4">
+                            <label htmlFor="emailId" className="block text-sm font-medium mb-1">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                id="emailId"
+                                placeholder="Enter email"
+                                className={`w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.emailId ? "border-red-500" : "border-gray-300"
+                                    }`}
+                                {...register("emailId")}
+                            />
+                            {errors.emailId && (
+                                <p className="text-red-600 text-xs mt-1">
+                                    {errors.emailId.message}
+                                </p>
+                            )}
+                        </div>
 
-                    {/* Password */}
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                            placeholder="Enter password"
-                            {...register("password")}
-                        />
-                        <div className="invalid-feedback">{errors.password?.message}</div>
-                    </div>
+                        {/* Password */}
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block text-sm font-medium mb-1">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter password"
+                                className={`w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.password ? "border-red-500" : "border-gray-300"
+                                    }`}
+                                {...register("password")}
+                            />
+                            {errors.password && (
+                                <p className="text-red-600 text-xs mt-1">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        className="btn btn-primary w-100"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? "Logging in..." : "Login"}
-                    </button>
-                </form>
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

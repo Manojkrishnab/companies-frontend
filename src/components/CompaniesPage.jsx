@@ -5,7 +5,6 @@ import { BASE_URL } from "../constants/BASE_URL";
 import CompanyFormModal from "./CompanyFormModal";
 
 const CompaniesPage = () => {
-  // Data & UI state
   const [companies, setCompanies] = useState([]);
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 10, pages: 0 });
   const [loading, setLoading] = useState(false);
@@ -19,7 +18,7 @@ const CompaniesPage = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc"); // 'asc' | 'desc'
 
-  // Dropdown values (fetched once with large limit)
+  // Dropdown values
   const [allIndustries, setAllIndustries] = useState([]);
   const [allCities, setAllCities] = useState([]);
 
@@ -176,192 +175,260 @@ const CompaniesPage = () => {
   };
 
   return (
-    <div className="container my-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="mb-0">List of Companies</h4>
-        <div>
-          <button className="btn btn-primary" onClick={openAddModal}>
-            + Add Company
-          </button>
-        </div>
+    <div className="max-w-7xl mx-auto p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h4 className="text-lg font-semibold">List of Companies</h4>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={openAddModal}
+        >
+          + Add Company
+        </button>
       </div>
 
       {/* Filters */}
-      <div className="card mb-3 filters-card">
-        <div className="card-body">
-          <div className="row g-2">
-            <div className="col-md-4">
-              <label className="form-label">Industry</label>
-              <select
-                className="form-select"
-                value={industryFilter}
-                onChange={(e) => {
-                  setIndustryFilter(e.target.value);
-                  setMeta((m) => ({ ...m, page: 1 }));
-                }}
-              >
-                <option value="">All Industries</option>
-                {allIndustries.map((ind) => (
-                  <option key={ind} value={ind}>
-                    {ind}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className="bg-white rounded-lg border shadow-sm p-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Industry</label>
+            <select
+              className="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"
+              value={industryFilter}
+              onChange={(e) => {
+                setIndustryFilter(e.target.value);
+                setMeta((m) => ({ ...m, page: 1 }));
+              }}
+            >
+              <option value="">All Industries</option>
+              {allIndustries.map((ind) => (
+                <option key={ind} value={ind}>
+                  {ind}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className="col-md-4">
-              <label className="form-label">City</label>
-              <select
-                className="form-select"
-                value={cityFilter}
-                onChange={(e) => {
-                  setCityFilter(e.target.value);
-                  setMeta((m) => ({ ...m, page: 1 }));
-                }}
-              >
-                <option value="">All Cities</option>
-                {allCities.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">City</label>
+            <select
+              className="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"
+              value={cityFilter}
+              onChange={(e) => {
+                setCityFilter(e.target.value);
+                setMeta((m) => ({ ...m, page: 1 }));
+              }}
+            >
+              <option value="">All Cities</option>
+              {allCities.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className="col-md-4">
-              <label className="form-label">Search</label>
-              <input
-                type="search"
-                className="form-control"
-                placeholder="Search by name or industry..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setMeta((m) => ({ ...m, page: 1 }));
-                }}
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Search</label>
+            <input
+              type="search"
+              className="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"
+              placeholder="Search by name or industry..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setMeta((m) => ({ ...m, page: 1 }));
+              }}
+            />
           </div>
         </div>
       </div>
 
       {/* Error */}
       {error && (
-        <div className="alert alert-danger">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="card">
-        <div className="card-body">
-          {loading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border" role="status" />
+      <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
+        {loading ? (
+          // Shimmer UI
+          <div className="animate-pulse p-6">
+            <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+
+            <div className="space-y-3">
+              {/* table header shimmer */}
+              <div className="grid grid-cols-7 gap-4">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+              </div>
+
+              {/* table rows shimmer */}
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <div key={idx} className="grid grid-cols-7 gap-4">
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+              ))}
             </div>
-          ) : companies.length === 0 ? (
-            <div className="text-center py-4">No companies found matching your filters.</div>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle">
-                <thead>
-                  <tr>
-                    <th style={{ cursor: "pointer" }} onClick={() => handleSort("name")}>
-                      Name {renderSortIndicator("name")}
-                    </th>
-                    <th style={{ cursor: "pointer" }} onClick={() => handleSort("industry")}>
-                      Industry {renderSortIndicator("industry")}
-                    </th>
-                    <th style={{ cursor: "pointer" }} onClick={() => handleSort("location")}>
-                      City {renderSortIndicator("location")}
-                    </th>
-                    <th style={{ cursor: "pointer" }} onClick={() => handleSort("employeeSize")}>
-                      Employees {renderSortIndicator("employeeSize")}
-                    </th>
-                    <th style={{ cursor: "pointer" }} onClick={() => handleSort("establishedDate")}>
-                      Established {renderSortIndicator("establishedDate")}
-                    </th>
-                    <th>Active</th>
-                    <th>Actions</th>
+          </div>
+        ) : companies.length === 0 ? (
+          <div className="text-center py-6 text-gray-500">
+            No companies found matching your filters.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left border-separate border-spacing-0">
+              <thead>
+                <tr className="text-gray-700">
+                  <th
+                    className="px-4 py-2 cursor-pointer border-b bg-gray-100 rounded-tl-lg"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name {renderSortIndicator("name")}
+                  </th>
+                  <th
+                    className="px-4 py-2 cursor-pointer border-b bg-gray-100"
+                    onClick={() => handleSort("industry")}
+                  >
+                    Industry {renderSortIndicator("industry")}
+                  </th>
+                  <th
+                    className="px-4 py-2 cursor-pointer border-b bg-gray-100"
+                    onClick={() => handleSort("location")}
+                  >
+                    City {renderSortIndicator("location")}
+                  </th>
+                  <th
+                    className="px-4 py-2 cursor-pointer border-b bg-gray-100"
+                    onClick={() => handleSort("employeeSize")}
+                  >
+                    Employees {renderSortIndicator("employeeSize")}
+                  </th>
+                  <th
+                    className="px-4 py-2 cursor-pointer border-b bg-gray-100"
+                    onClick={() => handleSort("establishedDate")}
+                  >
+                    Established {renderSortIndicator("establishedDate")}
+                  </th>
+                  <th className="px-4 py-2 border-b bg-gray-100">Active</th>
+                  <th className="px-4 py-2 border-b bg-gray-100 rounded-tr-lg">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {companies.map((c) => (
+                  <tr
+                    key={c._id}
+                    className="border-t hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-4 py-2">{c.name}</td>
+                    <td className="px-4 py-2">{c.industry}</td>
+                    <td className="px-4 py-2">{c.location}</td>
+                    <td className="px-4 py-2">
+                      {c.employeeSize?.toLocaleString?.() ?? c.employeeSize}
+                    </td>
+                    <td className="px-4 py-2">
+                      {c.establishedDate
+                        ? new Date(c.establishedDate).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-2">
+                      {c.isActive ? (
+                        <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+                          Inactive
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 flex gap-2">
+                      <button
+                        className="px-3 py-1 text-sm border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white"
+                        onClick={() => openEditModal(c)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-3 py-1 text-sm border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white"
+                        onClick={() => handleDelete(c)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {companies.map((c) => (
-                    <tr key={c._id}>
-                      <td>{c.name}</td>
-                      <td>{c.industry}</td>
-                      <td>{c.location}</td>
-                      <td>{c.employeeSize?.toLocaleString?.() ?? c.employeeSize}</td>
-                      <td>{c.establishedDate ? new Date(c.establishedDate).toLocaleDateString() : "-"}</td>
-                      <td>{c.isActive ? <span className="badge bg-success">Active</span> : <span className="badge bg-secondary">Inactive</span>}</td>
-                      <td>
-                        <button className="btn btn-sm btn-outline-primary me-2 mb-2 mb-md-0" onClick={() => openEditModal(c)}>
-                          Edit
-                        </button>
-                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(c)}>
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Pagination */}
-      <div className="d-flex justify-content-between align-items-center mt-3">
+      <div className="flex justify-between items-center mt-4 text-sm">
         <div>
-          <small>
-            Showing page {meta.page} of {meta.pages} — {meta.total} total
-          </small>
+          Showing page {meta.page} of {meta.pages} — {meta.total} total
         </div>
 
-        <nav aria-label="Companies pagination">
-          <ul className="pagination mb-0">
-            <li className={`page-item ${meta.page <= 1 ? "disabled" : ""}`}>
-              <button className="page-link" onClick={() => goToPage(meta.page - 1)}>
-                Previous
-              </button>
-            </li>
+        <div className="flex items-center gap-1">
+          <button
+            className={`px-3 py-1 border rounded ${meta.page <= 1
+              ? "text-gray-400 border-gray-300 cursor-not-allowed"
+              : "hover:bg-gray-100"
+              }`}
+            disabled={meta.page <= 1}
+            onClick={() => goToPage(meta.page - 1)}
+          >
+            Previous
+          </button>
 
-            {/* show a window of page numbers */}
-            {Array.from({ length: meta.pages }).map((_, idx) => {
-              const p = idx + 1;
-              // show first, last, and neighbors
-              if (meta.pages > 9) {
-                const start = Math.max(1, meta.page - 3);
-                const end = Math.min(meta.pages, meta.page + 3);
-                if (p !== 1 && p !== meta.pages && (p < start || p > end)) {
-                  // skip rendering this page (except we add ellipsis later)
-                  return null;
-                }
+          {Array.from({ length: meta.pages }).map((_, idx) => {
+            const p = idx + 1;
+            if (meta.pages > 9) {
+              const start = Math.max(1, meta.page - 3);
+              const end = Math.min(meta.pages, meta.page + 3);
+              if (p !== 1 && p !== meta.pages && (p < start || p > end)) {
+                return null;
               }
-              return (
-                <li key={p} className={`page-item ${p === meta.page ? "active" : ""}`}>
-                  <button className="page-link" onClick={() => goToPage(p)}>
-                    {p}
-                  </button>
-                </li>
-              );
-            })}
-
-            {/* If large pages, show first/last and ellipsis */}
-            {meta.pages > 9 && meta.page > 5 && (
-              <li className="page-item disabled">
-                <span className="page-link">...</span>
-              </li>
-            )}
-
-            <li className={`page-item ${meta.page >= meta.pages ? "disabled" : ""}`}>
-              <button className="page-link" onClick={() => goToPage(meta.page + 1)}>
-                Next
+            }
+            return (
+              <button
+                key={p}
+                className={`px-3 py-1 border rounded ${p === meta.page
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "hover:bg-gray-100"
+                  }`}
+                onClick={() => goToPage(p)}
+              >
+                {p}
               </button>
-            </li>
-          </ul>
-        </nav>
+            );
+          })}
+
+          <button
+            className={`px-3 py-1 border rounded ${meta.page >= meta.pages
+              ? "text-gray-400 border-gray-300 cursor-not-allowed"
+              : "hover:bg-gray-100"
+              }`}
+            disabled={meta.page >= meta.pages}
+            onClick={() => goToPage(meta.page + 1)}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Modal */}
